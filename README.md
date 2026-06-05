@@ -1,4 +1,3 @@
-at > /mnt/user-data/outputs/orvexa-foundations.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -36,7 +35,6 @@ at > /mnt/user-data/outputs/orvexa-foundations.html << 'HTMLEOF'
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ===== PAGE SYSTEM ===== */
     .page { display: none; }
     .page.active { display: block; animation: fadeIn 0.25s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
@@ -84,14 +82,28 @@ at > /mnt/user-data/outputs/orvexa-foundations.html << 'HTMLEOF'
 
     .nav-right { display: flex; align-items: center; gap: 4px; }
 
-    .nav-search-btn {
-      background: none; border: none; cursor: pointer;
-      color: var(--muted); padding: 8px; border-radius: 5px;
-      transition: all 0.18s; font-size: 1rem; line-height: 1;
+    /* ===== NEW SEARCH TRIGGER BUTTON ===== */
+    .nav-search-trigger {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--cream); border: 1px solid var(--border);
+      border-radius: 6px; padding: 6px 12px 6px 10px;
+      cursor: pointer; transition: all 0.2s;
+      color: var(--muted); font-size: 0.8rem;
+      font-family: 'DM Sans', sans-serif;
     }
-    .nav-search-btn:hover { color: var(--ink); background: var(--cream); }
+    .nav-search-trigger:hover {
+      border-color: var(--gold); background: #fef9f2; color: var(--ink);
+    }
+    .nav-search-trigger .search-icon { font-size: 0.85rem; }
+    .nav-search-trigger .search-label { display: none; }
+    .nav-search-trigger .kbd {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.04em;
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 3px; padding: 1px 5px; color: var(--muted);
+      line-height: 1.6; margin-left: 4px;
+    }
 
-    /* Mobile hamburger */
+    /* ===== MOBILE HAMBURGER ===== */
     .nav-hamburger {
       display: none; background: none; border: none; cursor: pointer;
       padding: 8px; color: var(--ink); font-size: 1.2rem;
@@ -116,42 +128,182 @@ at > /mnt/user-data/outputs/orvexa-foundations.html << 'HTMLEOF'
       text-align: center; margin-top: 12px;
     }
 
-    /* ===== SEARCH OVERLAY ===== */
+    /* ===========================
+       SEARCH OVERLAY — REDESIGNED
+       =========================== */
     .search-overlay {
       position: fixed; inset: 0; z-index: 2000;
-      background: rgba(13,13,13,0.88); backdrop-filter: blur(10px);
+      background: rgba(13,13,13,0); backdrop-filter: blur(0px);
       display: none; align-items: flex-start; justify-content: center;
-      padding-top: 110px;
+      padding-top: 80px; padding-left: 16px; padding-right: 16px;
+      transition: background 0.22s, backdrop-filter 0.22s;
     }
-    .search-overlay.open { display: flex; }
+    .search-overlay.open {
+      display: flex;
+      background: rgba(13,13,13,0.72);
+      backdrop-filter: blur(8px);
+      animation: overlayIn 0.2s ease forwards;
+    }
+    @keyframes overlayIn {
+      from { background: rgba(13,13,13,0); backdrop-filter: blur(0); }
+      to { background: rgba(13,13,13,0.72); backdrop-filter: blur(8px); }
+    }
 
-    .search-box { width: 100%; max-width: 680px; padding: 0 24px; }
-    .search-box input {
-      width: 100%; font-family: 'Playfair Display', serif;
-      font-size: 2rem; font-weight: 400; color: var(--white);
-      background: transparent; border: none;
-      border-bottom: 2px solid var(--gold);
-      padding: 14px 0; outline: none;
+    /* Command palette container */
+    .search-palette {
+      width: 100%; max-width: 680px;
+      background: var(--white);
+      border-radius: 14px;
+      border: 1px solid rgba(184,149,90,0.25);
+      box-shadow: 0 32px 80px rgba(13,13,13,0.35), 0 0 0 1px rgba(255,255,255,0.05);
+      overflow: hidden;
+      animation: paletteIn 0.22s cubic-bezier(0.34, 1.4, 0.64, 1) forwards;
+      transform-origin: top center;
     }
-    .search-box input::placeholder { color: rgba(255,255,255,0.3); }
-    .search-hint { margin-top: 14px; color: rgba(255,255,255,0.4); font-size: 0.82rem; }
+    @keyframes paletteIn {
+      from { opacity: 0; transform: scale(0.96) translateY(-8px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
 
-    .search-results { margin-top: 28px; display: flex; flex-direction: column; gap: 10px; }
-    .search-result-item {
-      background: rgba(255,255,255,0.07); border-radius: 8px;
-      padding: 14px 18px; cursor: pointer; transition: background 0.18s;
+    /* Search input bar */
+    .search-input-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px 20px; border-bottom: 1px solid #f0ece6;
+      background: var(--white);
     }
-    .search-result-item:hover { background: rgba(255,255,255,0.13); }
-    .search-result-item .cat { font-size: 0.68rem; letter-spacing: 0.12em;
-      text-transform: uppercase; color: var(--gold); margin-bottom: 5px; }
-    .search-result-item h4 { color: var(--white); font-family: 'Playfair Display', serif; font-size: 1rem; }
+    .search-icon-big {
+      font-size: 1.1rem; color: var(--gold); flex-shrink: 0;
+      width: 22px; text-align: center;
+    }
+    .search-input-main {
+      flex: 1; font-family: 'Playfair Display', serif;
+      font-size: 1.15rem; font-weight: 400; color: var(--ink);
+      background: transparent; border: none; outline: none;
+      caret-color: var(--gold);
+    }
+    .search-input-main::placeholder { color: #b8b0a8; }
+    .search-esc-badge {
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 0.06em;
+      background: #f0ece6; border: 1px solid var(--border);
+      border-radius: 4px; padding: 3px 7px; color: var(--muted);
+      cursor: pointer; flex-shrink: 0; transition: all 0.15s;
+    }
+    .search-esc-badge:hover { background: var(--ink); color: var(--ivory); border-color: var(--ink); }
 
-    .close-search {
-      position: absolute; top: 20px; right: 28px;
-      background: none; border: none; color: rgba(255,255,255,0.5);
-      font-size: 1.8rem; cursor: pointer; transition: color 0.18s; line-height: 1;
+    /* Quick nav section */
+    .search-section {
+      padding: 10px 0;
+      border-bottom: 1px solid #f0ece6;
     }
-    .close-search:hover { color: var(--white); }
+    .search-section:last-child { border-bottom: none; }
+
+    .search-section-label {
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: #b8b0a8;
+      padding: 6px 20px 8px;
+    }
+
+    /* Nav items in search */
+    .search-nav-items {
+      display: flex; flex-wrap: wrap; gap: 6px; padding: 4px 20px 10px;
+    }
+    .search-nav-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.8rem; font-weight: 500;
+      padding: 6px 14px; border-radius: 20px;
+      background: var(--cream); color: var(--ink);
+      border: 1px solid var(--border);
+      cursor: pointer; transition: all 0.15s;
+      text-decoration: none;
+    }
+    .search-nav-chip:hover {
+      background: var(--ink); color: var(--ivory); border-color: var(--ink);
+    }
+    .search-nav-chip .chip-emoji { font-size: 0.85rem; }
+
+    /* Search results list */
+    .search-results-list {
+      max-height: 400px; overflow-y: auto;
+    }
+    .search-results-list::-webkit-scrollbar { width: 4px; }
+    .search-results-list::-webkit-scrollbar-track { background: transparent; }
+    .search-results-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .search-result-row {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 13px 20px; cursor: pointer; transition: background 0.12s;
+      border-left: 2px solid transparent;
+    }
+    .search-result-row:hover, .search-result-row.focused {
+      background: #fef9f2; border-left-color: var(--gold);
+    }
+    .search-result-icon {
+      width: 34px; height: 34px; border-radius: 8px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem; margin-top: 1px;
+    }
+    .search-result-body { flex: 1; min-width: 0; }
+    .search-result-cat {
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; margin-bottom: 3px;
+    }
+    .search-result-title {
+      font-family: 'Playfair Display', serif; font-size: 0.97rem;
+      font-weight: 700; color: var(--ink); line-height: 1.3;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .search-result-meta {
+      font-size: 0.75rem; color: var(--muted); margin-top: 3px;
+    }
+    .search-result-arrow {
+      font-size: 0.8rem; color: var(--border); align-self: center;
+      transition: color 0.12s; flex-shrink: 0;
+    }
+    .search-result-row:hover .search-result-arrow { color: var(--gold); }
+
+    /* Highlight match */
+    .search-highlight { color: var(--gold); font-weight: 700; }
+
+    /* Empty / no results */
+    .search-empty {
+      padding: 32px 20px; text-align: center;
+    }
+    .search-empty-icon { font-size: 2rem; opacity: 0.3; margin-bottom: 10px; }
+    .search-empty-text { font-size: 0.88rem; color: var(--muted); }
+
+    /* Footer of palette */
+    .search-footer {
+      padding: 10px 20px; background: #fafaf8;
+      border-top: 1px solid #f0ece6;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .search-footer-hint {
+      font-size: 0.7rem; color: #b8b0a8;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .search-footer-hint kbd {
+      font-size: 0.65rem; font-weight: 700;
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 3px; padding: 2px 5px; color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+    }
+    .search-result-count {
+      font-size: 0.7rem; color: #b8b0a8;
+    }
+
+    /* Category colors */
+    .icon-ekonomi { background: #fef3e2; }
+    .icon-politik { background: #fce8e8; }
+    .icon-sosial { background: #e8f4ec; }
+    .icon-lingkungan { background: #e4f0e8; }
+    .icon-pendidikan { background: #eaeeff; }
+    .icon-opini { background: #f5e8f5; }
+    .cat-text-ekonomi { color: #92650a; }
+    .cat-text-politik { color: #8b3a2a; }
+    .cat-text-sosial { color: #2a4a3a; }
+    .cat-text-lingkungan { color: #2d6a4f; }
+    .cat-text-pendidikan { color: #3a3a8b; }
+    .cat-text-opini { color: #6a3a6a; }
 
     /* ===== HERO / MASTHEAD ===== */
     .hero-masthead {
@@ -561,7 +713,6 @@ at > /mnt/user-data/outputs/orvexa-foundations.html << 'HTMLEOF'
       font-size: 0.76rem; color: rgba(248,244,238,0.3); flex-wrap: wrap; gap: 8px;
     }
 
-    /* ===== NOTIFICATION DOT ===== */
     .new-badge {
       display: inline-block; background: var(--rust); color: white;
       font-size: 0.6rem; font-weight: 700; padding: 2px 7px;
@@ -569,7 +720,6 @@ at > /mnt/user-data/outputs/orvexa-foundations.html << 'HTMLEOF'
       text-transform: uppercase; letter-spacing: 0.06em;
     }
 
-    /* ===== MISC ===== */
     .input-file-hidden { display: none; }
     .mt-8 { margin-top: 8px; }
     .mt-16 { margin-top: 16px; }
@@ -589,6 +739,7 @@ at > /mnt/user-data/outputs/orvexa-foundations.html << 'HTMLEOF'
     @media (max-width: 768px) {
       .nav-links { display: none; }
       .nav-hamburger { display: block; }
+      .nav-search-trigger .kbd { display: none; }
       .articles-row { grid-template-columns: 1fr; }
       .footer-grid { grid-template-columns: 1fr 1fr; }
       .profile-stats { flex-direction: column; gap: 0; }
@@ -596,6 +747,8 @@ at > /mnt/user-data/outputs/orvexa-foundations.html << 'HTMLEOF'
       .form-grid { grid-template-columns: 1fr; }
       .works-grid { grid-template-columns: 1fr; }
       .work-item { padding: 28px 24px; }
+      .search-palette { border-radius: 10px; }
+      .search-overlay { padding-top: 56px; }
     }
 
     @media (max-width: 480px) {
@@ -604,17 +757,64 @@ at > /mnt/user-data/outputs/orvexa-foundations.html << 'HTMLEOF'
       .featured-main { padding: 36px 5%; }
       .cat-section { padding: 48px 5%; }
     }
+
+    @media (min-width: 1100px) {
+      .nav-search-trigger .search-label { display: inline; }
+      .nav-search-trigger { padding: 6px 14px 6px 12px; }
+    }
   </style>
 </head>
 <body>
 
-<!-- SEARCH OVERLAY -->
-<div class="search-overlay" id="searchOverlay">
-  <button class="close-search" onclick="closeSearch()">×</button>
-  <div class="search-box">
-    <input type="text" id="searchInput" placeholder="Cari artikel, topik, penulis…" oninput="doSearch(this.value)" onkeydown="if(event.key==='Escape')closeSearch()"/>
-    <p class="search-hint">Tekan ESC untuk menutup</p>
-    <div class="search-results" id="searchResults"></div>
+<!-- ========================
+     SEARCH OVERLAY — NEW
+     ======================== -->
+<div class="search-overlay" id="searchOverlay" onclick="handleOverlayClick(event)">
+  <div class="search-palette" id="searchPalette">
+
+    <!-- Input bar -->
+    <div class="search-input-row">
+      <span class="search-icon-big">🔍</span>
+      <input
+        type="text"
+        id="searchInput"
+        class="search-input-main"
+        placeholder="Cari artikel, topik, penulis…"
+        oninput="doSearch(this.value)"
+        onkeydown="handleSearchKey(event)"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <button class="search-esc-badge" onclick="closeSearch()">ESC</button>
+    </div>
+
+    <!-- Quick navigation section -->
+    <div class="search-section" id="searchQuickNav">
+      <div class="search-section-label">Navigasi Cepat</div>
+      <div class="search-nav-items">
+        <a class="search-nav-chip" onclick="closeSearch();showPage('home')"><span class="chip-emoji">🏠</span>Beranda</a>
+        <a class="search-nav-chip" onclick="closeSearch();showPage('ekonomi')"><span class="chip-emoji">📊</span>Ekonomi</a>
+        <a class="search-nav-chip" onclick="closeSearch();showPage('politik')"><span class="chip-emoji">🗳️</span>Politik</a>
+        <a class="search-nav-chip" onclick="closeSearch();showPage('sosial')"><span class="chip-emoji">👥</span>Sosial</a>
+        <a class="search-nav-chip" onclick="closeSearch();showPage('lingkungan')"><span class="chip-emoji">🌿</span>Lingkungan</a>
+        <a class="search-nav-chip" onclick="closeSearch();showPage('pendidikan')"><span class="chip-emoji">📚</span>Pendidikan</a>
+        <a class="search-nav-chip" onclick="closeSearch();showPage('karya')"><span class="chip-emoji">✍️</span>Karya Tulisan</a>
+        <a class="search-nav-chip" onclick="closeSearch();showPage('kirim')"><span class="chip-emoji">📮</span>Kirim Tulisan</a>
+      </div>
+    </div>
+
+    <!-- Results area -->
+    <div id="searchResultsArea"></div>
+
+    <!-- Footer -->
+    <div class="search-footer">
+      <div class="search-footer-hint">
+        <span><kbd>↑↓</kbd> navigasi</span>
+        <span><kbd>↵</kbd> pilih</span>
+        <span><kbd>ESC</kbd> tutup</span>
+      </div>
+      <div class="search-result-count" id="searchCount"></div>
+    </div>
   </div>
 </div>
 
@@ -634,10 +834,15 @@ at > /mnt/user-data/outputs/orvexa-foundations.html << 'HTMLEOF'
       <li><a onclick="showPage('pendidikan')" id="nav-pendidikan">Pendidikan</a></li>
       <li><a onclick="showPage('karya')" id="nav-karya">Karya Tulisan</a></li>
       <li><a onclick="showPage('profil')" id="nav-profil">Profil</a></li>
+      <li><a onclick="showPage('pedoman')" id="nav-pedoman">Pedoman</a></li>
       <li><a onclick="showPage('kirim')" id="nav-kirim" class="nav-cta">Kirim Tulisan</a></li>
     </ul>
     <div class="nav-right">
-      <button class="nav-search-btn" onclick="openSearch()" title="Cari">🔍</button>
+      <button class="nav-search-trigger" onclick="openSearch()" title="Cari (Ctrl+K)">
+        <span class="search-icon">🔍</span>
+        <span class="search-label" style="font-size:0.8rem;color:var(--muted);">Cari…</span>
+        <span class="kbd">⌘K</span>
+      </button>
       <button class="nav-hamburger" onclick="toggleDrawer()" id="hamburgerBtn">☰</button>
     </div>
   </div>
@@ -653,6 +858,7 @@ at > /mnt/user-data/outputs/orvexa-foundations.html << 'HTMLEOF'
   <a onclick="showPage('pendidikan');closeDrawer()">Pendidikan</a>
   <a onclick="showPage('karya');closeDrawer()">Karya Tulisan</a>
   <a onclick="showPage('profil');closeDrawer()">Profil</a>
+  <a onclick="showPage('pedoman');closeDrawer()">Pedoman Penulisan</a>
   <a onclick="showPage('kirim');closeDrawer()" class="mob-cta">Kirim Tulisan →</a>
 </div>
 
@@ -669,10 +875,8 @@ at > /mnt/user-data/outputs/orvexa-foundations.html << 'HTMLEOF'
   </div>
   <div class="date-strip" id="dateBar"></div>
 
-  <!-- Featured / Empty Check -->
   <div id="homeFeatured"></div>
 
-  <!-- Tulisan Terbaru dari Pengguna -->
   <div class="cat-section" id="homeUserArticles" style="display:none;">
     <div class="section-header">
       <h2 class="section-title">Tulisan Terbaru</h2>
@@ -682,7 +886,6 @@ at > /mnt/user-data/outputs/orvexa-foundations.html << 'HTMLEOF'
     <div class="articles-row" id="homeUserGrid"></div>
   </div>
 
-  <!-- CTA Banner -->
   <div class="cta-banner">
     <div style="position:relative;">
       <p style="font-size:0.72rem;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.75);margin-bottom:12px;">Kontribusi Pemikiran Anda</p>
@@ -778,7 +981,7 @@ at > /mnt/user-data/outputs/orvexa-foundations.html << 'HTMLEOF'
     <div class="profile-avatar">OF</div>
     <h1 class="profile-name">Orvexa Foundations</h1>
     <p class="profile-role">Platform Publikasi Terbuka</p>
-    <p class="profile-bio">Orvexa Foundations adalah platform editorial independen yang berkomitmen menyajikan pemikiran kritis, analisis mendalam, dan gagasan segar tentang Indonesia. Kami percaya perubahan bermula dari ide yang ditulis dengan kejujuran dan keberanian intelektual.</p>
+    <p class="profile-bio">Orvexa Foundations adalah platform editorial independen yang berkomitmen menyajikan pemikiran kritis, analisis mendalam, dan gagasan segar tentang Indonesia.</p>
   </div>
 
   <div class="profile-stats">
@@ -791,13 +994,11 @@ at > /mnt/user-data/outputs/orvexa-foundations.html << 'HTMLEOF'
   <div class="profile-content">
     <div class="guidelines-box">
       <h3>Tentang Orvexa Foundations</h3>
-      <p style="font-size:0.92rem;color:var(--muted);line-height:1.75;">Platform publikasi terbuka di mana setiap tulisan yang dikirim langsung terbit tanpa proses review atau moderasi. Kami percaya pada kebebasan ekspresi dan transparansi intelektual.</p>
+      <p style="font-size:0.92rem;color:var(--muted);line-height:1.75;">Platform publikasi terbuka di mana setiap tulisan yang dikirim langsung terbit tanpa proses review atau moderasi.</p>
     </div>
-
     <h2 style="font-family:'Playfair Display',serif;font-size:1.8rem;margin-bottom:24px;">Visi & Misi</h2>
-    <p style="color:var(--muted);line-height:1.8;margin-bottom:20px;"><strong style="color:var(--ink);">Visi:</strong> Menjadi platform referensi pemikiran terdepan di Indonesia yang mendorong kemajuan melalui gagasan dan analisis berbasis bukti.</p>
-    <p style="color:var(--muted);line-height:1.8;margin-bottom:40px;"><strong style="color:var(--ink);">Misi:</strong> Menyediakan ruang publikasi terbuka bagi siapa saja — akademisi, praktisi, dan pemikir independen — untuk berbagi gagasan yang berkontribusi pada wacana publik Indonesia tanpa hambatan birokrasi editorial.</p>
-
+    <p style="color:var(--muted);line-height:1.8;margin-bottom:20px;"><strong style="color:var(--ink);">Visi:</strong> Menjadi platform referensi pemikiran terdepan di Indonesia.</p>
+    <p style="color:var(--muted);line-height:1.8;margin-bottom:40px;"><strong style="color:var(--ink);">Misi:</strong> Menyediakan ruang publikasi terbuka bagi siapa saja.</p>
     <div style="text-align:center;padding:40px;background:var(--cream);border-radius:var(--radius);">
       <h3 style="font-family:'Playfair Display',serif;font-size:1.5rem;margin-bottom:12px;">Siap Berkontribusi?</h3>
       <p style="color:var(--muted);margin-bottom:24px;font-size:0.95rem;">Tulisan Anda akan langsung terbit begitu dikirim.</p>
@@ -808,86 +1009,163 @@ at > /mnt/user-data/outputs/orvexa-foundations.html << 'HTMLEOF'
 
 <!-- ==================== KIRIM TULISAN ==================== -->
 <div class="page" id="page-kirim">
-  <div class="submit-hero">
-    <p style="font-size:0.68rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;position:relative;">Kontribusi</p>
-    <h1>Kirim Tulisan</h1>
-    <p>Tulisan Anda langsung terbit begitu dikirim — tanpa proses review atau moderasi</p>
-  </div>
+<style>
+  .jf-wrap {
+    min-height: calc(100vh - 66px); margin-top: 66px;
+    display: grid; grid-template-columns: 300px 1fr; background: #f0ece6;
+  }
+  .jf-sidebar {
+    background: var(--ink); padding: 0; display: flex; flex-direction: column;
+    position: sticky; top: 66px; height: calc(100vh - 66px); overflow-y: auto;
+  }
+  .jf-sidebar-header { padding: 36px 28px 28px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .jf-sidebar-logo { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 900; color: var(--ivory); margin-bottom: 6px; }
+  .jf-sidebar-logo span { color: var(--gold); }
+  .jf-sidebar-tagline { font-size: 0.74rem; color: rgba(248,244,238,0.45); line-height: 1.5; }
+  .jf-steps { padding: 28px 0; flex: 1; }
+  .jf-step-item { display: flex; align-items: flex-start; gap: 14px; padding: 14px 28px; cursor: pointer; transition: background 0.18s; position: relative; }
+  .jf-step-item:hover { background: rgba(255,255,255,0.05); }
+  .jf-step-item.active { background: rgba(184,149,90,0.12); }
+  .jf-step-num { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; border: 1.5px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.4); transition: all 0.2s; }
+  .jf-step-item.active .jf-step-num { background: var(--gold); border-color: var(--gold); color: white; }
+  .jf-step-item.done .jf-step-num { background: var(--forest); border-color: var(--forest); color: white; }
+  .jf-step-info { flex: 1; }
+  .jf-step-label { font-size: 0.82rem; font-weight: 600; color: rgba(255,255,255,0.45); transition: color 0.2s; display: block; margin-bottom: 2px; }
+  .jf-step-item.active .jf-step-label, .jf-step-item.done .jf-step-label { color: var(--ivory); }
+  .jf-step-desc { font-size: 0.72rem; color: rgba(255,255,255,0.28); line-height: 1.4; }
+  .jf-progress-wrap { padding: 20px 28px; border-top: 1px solid rgba(255,255,255,0.08); }
+  .jf-progress-label { display: flex; justify-content: space-between; font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-bottom: 8px; }
+  .jf-progress-track { height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+  .jf-progress-fill { height: 100%; background: var(--gold); border-radius: 2px; transition: width 0.35s ease; width: 0%; }
+  .jf-main { padding: 48px 5% 80px; max-width: 760px; margin: 0 auto; width: 100%; }
+  .jf-panel { display: none; }
+  .jf-panel.active { display: block; animation: fadeIn 0.22s ease; }
+  .jf-panel-header { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+  .jf-panel-step-tag { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; display: block; }
+  .jf-panel-title { font-family: 'Playfair Display', serif; font-size: 1.7rem; font-weight: 900; color: var(--ink); margin-bottom: 6px; }
+  .jf-panel-subtitle { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+  .jf-field-card { background: var(--white); border-radius: 10px; border: 1px solid var(--border); padding: 24px 28px; margin-bottom: 16px; box-shadow: var(--shadow-sm); transition: box-shadow 0.18s, border-color 0.18s; }
+  .jf-field-card:focus-within { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(184,149,90,0.10), var(--shadow-sm); }
+  .jf-field-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  .jf-req { color: var(--rust); font-size: 0.9rem; }
+  .jf-field-hint { font-size: 0.76rem; color: var(--muted); font-weight: 400; text-transform: none; letter-spacing: 0; margin-top: 2px; display: block; }
+  .jf-input, .jf-select, .jf-textarea { font-family: 'DM Sans', sans-serif; font-size: 0.96rem; color: var(--ink); background: transparent; border: none; border-bottom: 1.5px solid var(--border); padding: 8px 0; outline: none; width: 100%; transition: border-color 0.18s; }
+  .jf-input:focus, .jf-select:focus, .jf-textarea:focus { border-color: var(--gold); }
+  .jf-textarea { resize: vertical; min-height: 220px; line-height: 1.75; }
+  .jf-select { background: transparent; cursor: pointer; }
+  .jf-cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .jf-cat-card { border: 1.5px solid var(--border); border-radius: 8px; padding: 16px 14px; cursor: pointer; transition: all 0.18s; text-align: center; background: var(--white); }
+  .jf-cat-card:hover { border-color: var(--gold); background: #fef9f2; }
+  .jf-cat-card.selected { border-color: var(--gold); background: #fef9f2; box-shadow: 0 0 0 2px rgba(184,149,90,0.25); }
+  .jf-cat-card .cat-emoji { font-size: 1.6rem; margin-bottom: 6px; display: block; }
+  .jf-cat-card .cat-name { font-size: 0.78rem; font-weight: 700; color: var(--ink); }
+  .jf-cat-card .cat-sub { font-size: 0.68rem; color: var(--muted); margin-top: 3px; }
+  .jf-radio-group { display: flex; flex-direction: column; gap: 10px; }
+  .jf-radio-option { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: 8px; cursor: pointer; transition: all 0.18s; background: var(--white); }
+  .jf-radio-option:hover { border-color: var(--gold); background: #fef9f2; }
+  .jf-radio-option.selected { border-color: var(--gold); background: #fef9f2; }
+  .jf-radio-option input { accent-color: var(--gold); width: 16px; height: 16px; }
+  .jf-radio-label { font-size: 0.9rem; font-weight: 500; }
+  .jf-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border); }
+  .jf-btn-next { background: var(--gold); color: white; border: none; padding: 13px 36px; border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: all 0.18s; display: flex; align-items: center; gap: 8px; }
+  .jf-btn-next:hover { background: var(--rust); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .jf-btn-back { background: none; border: 1.5px solid var(--border); color: var(--muted); padding: 12px 24px; border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 0.86rem; font-weight: 600; cursor: pointer; transition: all 0.18s; }
+  .jf-btn-back:hover { border-color: var(--ink); color: var(--ink); }
+  .jf-btn-submit { background: var(--ink); color: var(--ivory); border: none; padding: 15px 44px; border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 0.96rem; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 10px; letter-spacing: 0.02em; }
+  .jf-btn-submit:hover { background: var(--gold); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+  .jf-success { text-align: center; padding: 60px 24px; }
+  .jf-success-icon { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--gold), var(--rust)); display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin: 0 auto 24px; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+  @keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .jf-upload { border: 2px dashed var(--border); border-radius: 8px; padding: 32px; text-align: center; cursor: pointer; transition: all 0.2s; background: #fafaf8; }
+  .jf-upload:hover, .jf-upload.dragging { border-color: var(--gold); background: #fef9f2; }
+  .jf-count { font-size: 0.72rem; color: var(--muted); margin-top: 6px; text-align: right; }
+  .jf-count.warn { color: var(--gold); }
+  .jf-count.over { color: var(--rust); }
+  @media (max-width: 768px) {
+    .jf-wrap { grid-template-columns: 1fr; }
+    .jf-sidebar { position: static; height: auto; }
+    .jf-steps { display: flex; overflow-x: auto; padding: 0; }
+    .jf-step-item { flex-direction: column; align-items: center; text-align: center; padding: 14px 16px; min-width: 90px; }
+    .jf-step-desc { display: none; }
+    .jf-sidebar-header { display: none; }
+    .jf-progress-wrap { display: none; }
+    .jf-cat-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
 
-  <div class="submit-form-wrap">
-    <div class="guidelines-box">
-      <h3>📢 Auto-Publish Aktif</h3>
-      <ul>
-        <li>Tulisan Anda <strong>langsung terbit</strong> setelah form dikirim — tidak ada proses review</li>
-        <li>Tulisan otomatis muncul di <strong>Beranda, halaman Kategori, dan Karya Tulisan</strong></li>
-        <li>Pastikan judul, nama penulis, dan isi tulisan sudah benar sebelum mengirim</li>
-        <li>Gunakan ringkasan yang menarik agar pembaca tertarik membaca lebih lanjut</li>
-      </ul>
+<div class="jf-wrap">
+  <aside class="jf-sidebar">
+    <div class="jf-sidebar-header">
+      <div class="jf-sidebar-logo">Orvexa <span>Foundations</span></div>
+      <div class="jf-sidebar-tagline">Platform publikasi terbuka · Tulisan langsung terbit</div>
+    </div>
+    <div class="jf-steps" id="jfSteps">
+      <div class="jf-step-item active" onclick="goStep(1)" id="jf-step-nav-1"><div class="jf-step-num" id="jf-stepnum-1">1</div><div class="jf-step-info"><span class="jf-step-label">Identitas Penulis</span><span class="jf-step-desc">Nama, email & institusi</span></div></div>
+      <div class="jf-step-item" onclick="goStep(2)" id="jf-step-nav-2"><div class="jf-step-num" id="jf-stepnum-2">2</div><div class="jf-step-info"><span class="jf-step-label">Kategori Tulisan</span><span class="jf-step-desc">Pilih rubrik yang sesuai</span></div></div>
+      <div class="jf-step-item" onclick="goStep(3)" id="jf-step-nav-3"><div class="jf-step-num" id="jf-stepnum-3">3</div><div class="jf-step-info"><span class="jf-step-label">Judul & Ringkasan</span><span class="jf-step-desc">Headline & abstrak</span></div></div>
+      <div class="jf-step-item" onclick="goStep(4)" id="jf-step-nav-4"><div class="jf-step-num" id="jf-stepnum-4">4</div><div class="jf-step-info"><span class="jf-step-label">Isi Tulisan</span><span class="jf-step-desc">Konten artikel lengkap</span></div></div>
+      <div class="jf-step-item" onclick="goStep(5)" id="jf-step-nav-5"><div class="jf-step-num" id="jf-stepnum-5">5</div><div class="jf-step-info"><span class="jf-step-label">Upload & Kirim</span><span class="jf-step-desc">Lampiran & terbitkan</span></div></div>
+    </div>
+    <div class="jf-progress-wrap">
+      <div class="jf-progress-label"><span>Progres pengisian</span><span id="jfProgressPct">0%</span></div>
+      <div class="jf-progress-track"><div class="jf-progress-fill" id="jfProgressFill"></div></div>
+    </div>
+  </aside>
+
+  <main class="jf-main" style="padding-top:48px;">
+    <div class="jf-panel active" id="jf-panel-1">
+      <div class="jf-panel-header"><span class="jf-panel-step-tag">Langkah 1 dari 5</span><h2 class="jf-panel-title">Identitas Penulis</h2><p class="jf-panel-subtitle">Isi informasi dasar tentang diri Anda sebagai penulis.</p></div>
+      <div class="jf-field-card"><div class="jf-field-label">Nama Lengkap <span class="jf-req">*</span></div><input class="jf-input" type="text" id="f-nama" placeholder="Contoh: Ahmad Fauzi Rahman"/></div>
+      <div class="jf-field-card"><div class="jf-field-label">Alamat Email <span class="jf-req">*</span><span class="jf-field-hint">Untuk konfirmasi penerbitan tulisan Anda</span></div><input class="jf-input" type="email" id="f-email" placeholder="email@anda.com"/></div>
+      <div class="jf-field-card"><div class="jf-field-label">Nomor WhatsApp<span class="jf-field-hint">Opsional</span></div><input class="jf-input" type="tel" id="f-wa" placeholder="+62 812 3456 7890"/></div>
+      <div class="jf-field-card"><div class="jf-field-label">Afiliasi / Institusi<span class="jf-field-hint">Universitas, lembaga, atau "Independen"</span></div><input class="jf-input" type="text" id="f-afiliasi" placeholder="Contoh: Universitas Indonesia / Independen"/></div>
+      <div class="jf-field-card"><div class="jf-field-label">Biografi Singkat<span class="jf-field-hint">Akan ditampilkan di bawah artikel Anda (maks. 150 kata)</span></div><textarea class="jf-textarea" id="f-bio" style="min-height:100px;" placeholder="Ceritakan latar belakang, keahlian, dan fokus penulisan Anda…" oninput="jfCount(this,'bioCount',150,'kata')"></textarea><div class="jf-count" id="bioCount">0 / 150 kata</div></div>
+      <div class="jf-nav"><span></span><button class="jf-btn-next" onclick="nextStep(1)">Lanjutkan <span>→</span></button></div>
     </div>
 
-    <div class="form-grid">
-      <div class="form-group">
-        <label class="form-label">Nama Lengkap *</label>
-        <input class="form-input" type="text" id="f-nama" placeholder="Nama Anda"/>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Email *</label>
-        <input class="form-input" type="email" id="f-email" placeholder="email@anda.com"/>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Afiliasi / Institusi</label>
-        <input class="form-input" type="text" id="f-afiliasi" placeholder="Universitas / Lembaga / Independen"/>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Kategori Rubrik *</label>
-        <select class="form-select" id="f-kategori">
-          <option value="">-- Pilih Kategori --</option>
-          <option value="ekonomi">Ekonomi</option>
-          <option value="politik">Politik</option>
-          <option value="sosial">Sosial</option>
-          <option value="lingkungan">Lingkungan</option>
-          <option value="pendidikan">Pendidikan</option>
-          <option value="opini">Opini Umum</option>
-        </select>
-      </div>
-      <div class="form-group form-full">
-        <label class="form-label">Judul Tulisan *</label>
-        <input class="form-input" type="text" id="f-judul" placeholder="Judul yang ringkas dan deskriptif" maxlength="120"/>
-        <div class="char-count" id="judulCount">0 / 120 karakter</div>
-      </div>
-      <div class="form-group form-full">
-        <label class="form-label">Ringkasan / Abstrak *</label>
-        <input class="form-input" type="text" id="f-ringkasan" placeholder="1–2 kalimat yang menggambarkan isi tulisan" maxlength="200"/>
-        <div class="char-count" id="ringkasanCount">0 / 200 karakter</div>
-      </div>
-      <div class="form-group form-full">
-        <label class="form-label">Isi Tulisan *</label>
-        <textarea class="form-textarea" id="f-isi" placeholder="Tulis atau tempel isi artikel Anda di sini…" oninput="updateWordCount(this)"></textarea>
-        <div class="char-count" id="wordCount">0 kata</div>
-      </div>
-      <div class="form-group form-full">
-        <label class="form-label">Upload Dokumen (Opsional)</label>
-        <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()"
-          ondragover="event.preventDefault();this.classList.add('dragging')"
-          ondragleave="this.classList.remove('dragging')"
-          ondrop="handleDrop(event)">
-          <div class="upload-icon">📎</div>
-          <p class="upload-text"><strong>Klik untuk upload</strong> atau seret file ke sini</p>
-          <p class="upload-text" style="margin-top:6px;font-size:0.8rem;">Format: .doc, .docx, .pdf, .txt — Maks. 10 MB</p>
-          <p id="uploadedFileName" style="margin-top:10px;font-size:0.84rem;color:var(--gold);font-weight:600;"></p>
+    <div class="jf-panel" id="jf-panel-2">
+      <div class="jf-panel-header"><span class="jf-panel-step-tag">Langkah 2 dari 5</span><h2 class="jf-panel-title">Pilih Kategori Rubrik</h2><p class="jf-panel-subtitle">Tentukan rubrik yang paling sesuai dengan topik tulisan Anda.</p></div>
+      <div class="jf-field-card"><div class="jf-field-label">Kategori <span class="jf-req">*</span></div><div class="jf-cat-grid" id="catGrid"><div class="jf-cat-card" onclick="selectCat('ekonomi',this)"><span class="cat-emoji">📊</span><div class="cat-name">Ekonomi</div><div class="cat-sub">Bisnis, keuangan, pasar</div></div><div class="jf-cat-card" onclick="selectCat('politik',this)"><span class="cat-emoji">🗳️</span><div class="cat-name">Politik</div><div class="cat-sub">Demokrasi, kebijakan publik</div></div><div class="jf-cat-card" onclick="selectCat('sosial',this)"><span class="cat-emoji">👥</span><div class="cat-name">Sosial</div><div class="cat-sub">Masyarakat, budaya</div></div><div class="jf-cat-card" onclick="selectCat('lingkungan',this)"><span class="cat-emoji">🌿</span><div class="cat-name">Lingkungan</div><div class="cat-sub">Iklim, keberlanjutan</div></div><div class="jf-cat-card" onclick="selectCat('pendidikan',this)"><span class="cat-emoji">📚</span><div class="cat-name">Pendidikan</div><div class="cat-sub">Kurikulum, riset, inovasi</div></div><div class="jf-cat-card" onclick="selectCat('opini',this)"><span class="cat-emoji">✍️</span><div class="cat-name">Opini Umum</div><div class="cat-sub">Essay, kolom, gagasan</div></div></div><input type="hidden" id="f-kategori" value=""/></div>
+      <div class="jf-field-card"><div class="jf-field-label">Jenis Tulisan <span class="jf-req">*</span></div><div class="jf-radio-group"><label class="jf-radio-option" onclick="this.classList.add('selected');this.parentElement.querySelectorAll('.jf-radio-option').forEach(o=>o!==this&&o.classList.remove('selected'))"><input type="radio" name="jenisTulisan" value="analisis"/> <span class="jf-radio-label">📐 Analisis — tulisan berbasis data dan penelitian</span></label><label class="jf-radio-option" onclick="this.classList.add('selected');this.parentElement.querySelectorAll('.jf-radio-option').forEach(o=>o!==this&&o.classList.remove('selected'))"><input type="radio" name="jenisTulisan" value="opini"/><span class="jf-radio-label">💬 Opini / Kolom — pandangan dan argumentasi pribadi</span></label><label class="jf-radio-option" onclick="this.classList.add('selected');this.parentElement.querySelectorAll('.jf-radio-option').forEach(o=>o!==this&&o.classList.remove('selected'))"><input type="radio" name="jenisTulisan" value="esai"/><span class="jf-radio-label">📝 Esai — refleksi mendalam dan naratif</span></label><label class="jf-radio-option" onclick="this.classList.add('selected');this.parentElement.querySelectorAll('.jf-radio-option').forEach(o=>o!==this&&o.classList.remove('selected'))"><input type="radio" name="jenisTulisan" value="reportase"/><span class="jf-radio-label">🔎 Reportase — liputan dan investigasi</span></label></div></div>
+      <div class="jf-nav"><button class="jf-btn-back" onclick="goStep(1)">← Kembali</button><button class="jf-btn-next" onclick="nextStep(2)">Lanjutkan <span>→</span></button></div>
+    </div>
+
+    <div class="jf-panel" id="jf-panel-3">
+      <div class="jf-panel-header"><span class="jf-panel-step-tag">Langkah 3 dari 5</span><h2 class="jf-panel-title">Judul & Ringkasan</h2><p class="jf-panel-subtitle">Judul yang kuat dan ringkasan yang menarik akan membantu pembaca menemukan tulisan Anda.</p></div>
+      <div class="jf-field-card"><div class="jf-field-label">Judul Tulisan <span class="jf-req">*</span><span class="jf-field-hint">Ringkas, deskriptif, dan tidak clickbait</span></div><input class="jf-input" type="text" id="f-judul" placeholder="Contoh: Ketimpangan Digital dan Masa Depan Ekonomi Indonesia" maxlength="120" oninput="jfCount(this,'judulCount',120,'karakter')"/><div class="jf-count" id="judulCount">0 / 120 karakter</div></div>
+      <div class="jf-field-card"><div class="jf-field-label">Ringkasan / Abstrak <span class="jf-req">*</span><span class="jf-field-hint">1–2 kalimat yang menggambarkan isi dan argumen utama tulisan</span></div><textarea class="jf-textarea" id="f-ringkasan" style="min-height:100px;" placeholder="Tulisan ini menganalisis…" maxlength="300" oninput="jfCount(this,'ringkasanCount',300,'karakter')"></textarea><div class="jf-count" id="ringkasanCount">0 / 300 karakter</div></div>
+      <div class="jf-field-card"><div class="jf-field-label">Kata Kunci<span class="jf-field-hint">Pisahkan dengan koma (maks. 5 kata kunci)</span></div><input class="jf-input" type="text" id="f-keywords" placeholder="Contoh: ekonomi digital, ketimpangan, UMKM, teknologi"/></div>
+      <div class="jf-nav"><button class="jf-btn-back" onclick="goStep(2)">← Kembali</button><button class="jf-btn-next" onclick="nextStep(3)">Lanjutkan <span>→</span></button></div>
+    </div>
+
+    <div class="jf-panel" id="jf-panel-4">
+      <div class="jf-panel-header"><span class="jf-panel-step-tag">Langkah 4 dari 5</span><h2 class="jf-panel-title">Isi Tulisan</h2><p class="jf-panel-subtitle">Tulis atau tempel isi artikel Anda. Minimal 100 kata untuk dapat diterbitkan.</p></div>
+      <div class="jf-field-card"><div class="jf-field-label">Konten Artikel <span class="jf-req">*</span><span class="jf-field-hint">Gunakan paragraf terpisah untuk memudahkan pembacaan</span></div><textarea class="jf-textarea" id="f-isi" style="min-height:320px;" placeholder="Mulai tulis artikel Anda di sini…&#10;&#10;Pisahkan setiap paragraf dengan baris kosong." oninput="updateWordCount(this)"></textarea><div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;"><span class="jf-count" id="wordCount" style="text-align:left;">0 kata · estimasi 0 menit baca</span><span class="jf-count" id="warnText" style="color:var(--rust);"></span></div></div>
+      <div class="jf-nav"><button class="jf-btn-back" onclick="goStep(3)">← Kembali</button><button class="jf-btn-next" onclick="nextStep(4)">Lanjutkan <span>→</span></button></div>
+    </div>
+
+    <div class="jf-panel" id="jf-panel-5">
+      <div class="jf-panel-header"><span class="jf-panel-step-tag">Langkah 5 dari 5</span><h2 class="jf-panel-title">Upload & Terbitkan</h2><p class="jf-panel-subtitle">Langkah terakhir — lampirkan dokumen (opsional) lalu terbitkan tulisan Anda.</p></div>
+      <div class="jf-field-card" style="background:var(--cream);border-color:var(--border);"><div class="jf-field-label">📋 Ringkasan Pengiriman</div><div id="jf-summary" style="margin-top:8px;display:grid;gap:10px;"></div></div>
+      <div class="jf-field-card"><div class="jf-field-label">Upload Dokumen Pendukung<span class="jf-field-hint">Opsional — .doc, .docx, .pdf, .txt · Maks. 10 MB</span></div><div class="jf-upload" id="uploadZone" onclick="document.getElementById('fileInput').click()" ondragover="event.preventDefault();this.classList.add('dragging')" ondragleave="this.classList.remove('dragging')" ondrop="handleDrop(event)"><div style="font-size:2rem;margin-bottom:10px;">📎</div><p style="font-size:0.88rem;color:var(--ink);font-weight:600;">Klik untuk pilih file</p><p style="font-size:0.78rem;color:var(--muted);margin-top:4px;">atau seret & lepas ke sini</p><p id="uploadedFileName" style="margin-top:12px;font-size:0.84rem;color:var(--gold);font-weight:700;"></p></div><input type="file" id="fileInput" class="input-file-hidden" accept=".doc,.docx,.pdf,.txt" onchange="handleFileSelect(this)"/></div>
+      <div class="jf-field-card" style="background:#e8f4ec;border-color:#b8ddc4;"><div style="display:flex;gap:14px;align-items:flex-start;"><span style="font-size:1.4rem;margin-top:2px;">⚡</span><div><div style="font-weight:700;color:var(--forest);margin-bottom:4px;font-size:0.9rem;">Auto-Publish Aktif</div><p style="font-size:0.84rem;color:#2a5a3a;line-height:1.65;">Tulisan Anda akan <strong>langsung diterbitkan</strong> begitu Anda menekan tombol di bawah.</p></div></div></div>
+      <div class="jf-nav"><button class="jf-btn-back" onclick="goStep(4)">← Kembali</button><button class="jf-btn-submit" onclick="submitForm()">⚡ Terbitkan Tulisan Sekarang</button></div>
+    </div>
+
+    <div class="jf-panel" id="jf-panel-success">
+      <div class="jf-success">
+        <div class="jf-success-icon">✓</div>
+        <h2 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;margin-bottom:12px;">Tulisan Berhasil Diterbitkan!</h2>
+        <p style="font-size:0.96rem;color:var(--muted);max-width:440px;margin:0 auto 32px;line-height:1.7;">Tulisan Anda kini sudah tampil di Beranda, halaman Kategori, dan Karya Tulisan.</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="showPage('home')">Lihat di Beranda →</button>
+          <button class="btn btn-outline" onclick="showPage('karya')">Karya Tulisan</button>
+          <button class="btn btn-outline" onclick="resetJFForm()">Kirim Tulisan Lain</button>
         </div>
-        <input type="file" id="fileInput" class="input-file-hidden" accept=".doc,.docx,.pdf,.txt" onchange="handleFileSelect(this)"/>
       </div>
     </div>
-
-    <div style="margin-top:28px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;">
-      <button class="btn btn-gold" style="font-size:0.95rem;padding:15px 40px;" onclick="submitForm()">
-        ⚡ Kirim & Terbitkan Sekarang
-      </button>
-      <button class="btn btn-outline" onclick="clearForm()">Bersihkan Form</button>
-    </div>
-    <p style="margin-top:14px;font-size:0.8rem;color:var(--muted);">Tulisan akan langsung muncul di website setelah dikirim.</p>
-  </div>
+  </main>
+</div>
 </div>
 
 <!-- ==================== ARTICLE VIEW ==================== -->
@@ -905,45 +1183,38 @@ at > /mnt/user-data/outputs/orvexa-foundations.html << 'HTMLEOF'
       </div>
     </div>
   </div>
-  <div class="article-body" id="articleBodyContent">
-    <!-- filled dynamically -->
+  <div class="article-body" id="articleBodyContent"></div>
+</div>
+
+<!-- ==================== PEDOMAN PENULISAN ==================== -->
+<div class="page" id="page-pedoman">
+  <div class="page-header">
+    <p style="font-size:0.68rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;position:relative;">Panduan</p>
+    <h1>Pedoman Penulisan</h1>
+    <p>Standar editorial Orvexa Foundations untuk tulisan yang informatif, etis, dan profesional</p>
+  </div>
+  <div style="max-width:860px;margin:0 auto;padding:64px 5%;">
+    <div style="background:var(--ink);color:var(--ivory);padding:36px 40px;border-radius:var(--radius);margin-bottom:48px;position:relative;overflow:hidden;">
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 80% 50%,rgba(184,149,90,0.18) 0%,transparent 70%);pointer-events:none;"></div>
+      <p style="font-size:0.68rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;position:relative;">Tentang Pedoman Ini</p>
+      <p style="font-family:'DM Serif Display',serif;font-size:1.25rem;line-height:1.7;color:rgba(248,244,238,0.9);position:relative;">Pedoman ini bertujuan memastikan bahwa setiap tulisan yang diterbitkan di Orvexa Foundations tidak hanya informatif, tetapi juga <em>etis, akurat, dan profesional</em>.</p>
+    </div>
+    <div style="text-align:center;padding:48px 32px;background:var(--ink);border-radius:var(--radius);">
+      <div style="position:relative;"><p style="font-size:0.68rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;">Siap Menulis?</p><h3 style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;color:var(--ivory);margin-bottom:12px;">Terapkan Pedoman Ini</h3><button class="btn btn-gold" onclick="showPage('kirim')">Kirim Tulisan Sekarang →</button></div>
+    </div>
   </div>
 </div>
 
-<!-- ==================== FOOTER ==================== -->
+<!-- FOOTER -->
 <footer>
   <div class="footer-grid">
     <div class="footer-brand">
       <a class="logo" onclick="showPage('home')">Orvexa <span>Foundations</span></a>
-      <p>Platform publikasi terbuka untuk pemikiran, analisis, dan gagasan. Setiap tulisan yang dikirim langsung terbit dan tampil di seluruh bagian website.</p>
+      <p>Platform publikasi terbuka untuk pemikiran, analisis, dan gagasan.</p>
     </div>
-    <div class="footer-col">
-      <h4>Rubrik</h4>
-      <ul>
-        <li><a onclick="showPage('ekonomi')">Ekonomi</a></li>
-        <li><a onclick="showPage('politik')">Politik</a></li>
-        <li><a onclick="showPage('sosial')">Sosial</a></li>
-        <li><a onclick="showPage('lingkungan')">Lingkungan</a></li>
-        <li><a onclick="showPage('pendidikan')">Pendidikan</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>Media</h4>
-      <ul>
-        <li><a onclick="showPage('karya')">Karya Tulisan</a></li>
-        <li><a onclick="showPage('kirim')">Kirim Tulisan</a></li>
-        <li><a onclick="showPage('profil')">Profil</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>Lainnya</h4>
-      <ul>
-        <li><a>Pedoman Penulisan</a></li>
-        <li><a>Kebijakan Privasi</a></li>
-        <li><a>Syarat Penggunaan</a></li>
-        <li><a>Kontak</a></li>
-      </ul>
-    </div>
+    <div class="footer-col"><h4>Rubrik</h4><ul><li><a onclick="showPage('ekonomi')">Ekonomi</a></li><li><a onclick="showPage('politik')">Politik</a></li><li><a onclick="showPage('sosial')">Sosial</a></li><li><a onclick="showPage('lingkungan')">Lingkungan</a></li><li><a onclick="showPage('pendidikan')">Pendidikan</a></li></ul></div>
+    <div class="footer-col"><h4>Media</h4><ul><li><a onclick="showPage('karya')">Karya Tulisan</a></li><li><a onclick="showPage('kirim')">Kirim Tulisan</a></li><li><a onclick="showPage('profil')">Profil</a></li></ul></div>
+    <div class="footer-col"><h4>Lainnya</h4><ul><li><a onclick="showPage('pedoman')">Pedoman Penulisan</a></li><li><a>Kebijakan Privasi</a></li><li><a>Kontak</a></li></ul></div>
   </div>
   <div class="footer-bottom">
     <span>© 2025 Orvexa Foundations. Hak cipta dilindungi undang-undang.</span>
@@ -953,7 +1224,7 @@ at > /mnt/user-data/outputs/orvexa-foundations.html << 'HTMLEOF'
 
 <script>
 // ================================================================
-// DATA STORE — semua artikel tersimpan di sini (mulai kosong)
+// DATA STORE
 // ================================================================
 let publishedArticles = [];
 
@@ -970,23 +1241,13 @@ function showPage(pageId) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
   closeSearch();
   closeDrawer();
-
-  // Refresh grids when navigating
   if (pageId === 'home') renderHome();
   if (pageId === 'karya') renderWorks('semua');
   if (['ekonomi','politik','sosial','lingkungan','pendidikan'].includes(pageId)) renderCategoryPage(pageId);
 }
 
-// ================================================================
-// MOBILE DRAWER
-// ================================================================
-function toggleDrawer() {
-  const d = document.getElementById('mobileDrawer');
-  d.classList.toggle('open');
-}
-function closeDrawer() {
-  document.getElementById('mobileDrawer').classList.remove('open');
-}
+function toggleDrawer() { document.getElementById('mobileDrawer').classList.toggle('open'); }
+function closeDrawer() { document.getElementById('mobileDrawer').classList.remove('open'); }
 
 // ================================================================
 // ARTICLE VIEW
@@ -994,129 +1255,60 @@ function closeDrawer() {
 function showArticle(article) {
   const catLabels = {ekonomi:'Ekonomi',politik:'Politik',sosial:'Sosial',lingkungan:'Lingkungan',pendidikan:'Pendidikan',opini:'Opini Umum'};
   const catClasses = {ekonomi:'cat-ekonomi',politik:'cat-politik',sosial:'cat-sosial',lingkungan:'cat-lingkungan',pendidikan:'cat-pendidikan',opini:'cat-opini'};
-
   document.getElementById('art-title').textContent = article.judul;
   document.getElementById('art-author').textContent = article.nama;
   document.getElementById('art-date').textContent = article.tanggal;
-
   const tag = document.getElementById('art-cat-tag');
   tag.textContent = catLabels[article.kategori] || article.kategori;
   tag.className = 'category-tag ' + (catClasses[article.kategori] || 'cat-opini');
-
   const words = article.isi.split(/\s+/).length;
   const mins = Math.max(1, Math.round(words / 200));
   document.getElementById('art-readtime').textContent = mins + ' menit baca';
-
-  // Build body
   const body = document.getElementById('articleBodyContent');
   const ringkasan = article.ringkasan || '';
   const paragraphs = article.isi.split(/\n\n+/).filter(p => p.trim());
   let html = '';
   if (ringkasan) html += `<blockquote>${ringkasan}</blockquote>`;
   paragraphs.forEach(p => { html += `<p>${p.trim()}</p>`; });
-  html += `
-    <div style="border-top:1px solid var(--border);padding-top:32px;margin-top:44px;">
-      <button class="btn btn-outline" onclick="history.back();window.scrollTo(0,0);" style="margin-bottom:24px;">← Kembali</button>
-      <div style="background:var(--cream);padding:24px;border-radius:var(--radius);display:flex;gap:16px;align-items:center;">
-        <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--rust));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:1rem;flex-shrink:0;">${article.nama.split(' ').slice(0,2).map(n=>n[0]).join('')}</div>
-        <div>
-          <p style="font-size:0.72rem;color:var(--muted);margin-bottom:3px;letter-spacing:0.06em;text-transform:uppercase;">Tentang Penulis</p>
-          <p style="font-weight:600;">${article.nama}</p>
-          ${article.afiliasi ? `<p style="font-size:0.83rem;color:var(--muted);">${article.afiliasi}</p>` : ''}
-        </div>
-      </div>
-    </div>`;
+  html += `<div style="border-top:1px solid var(--border);padding-top:32px;margin-top:44px;"><button class="btn btn-outline" onclick="history.back();window.scrollTo(0,0);" style="margin-bottom:24px;">← Kembali</button><div style="background:var(--cream);padding:24px;border-radius:var(--radius);display:flex;gap:16px;align-items:center;"><div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--rust));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:1rem;flex-shrink:0;">${article.nama.split(' ').slice(0,2).map(n=>n[0]).join('')}</div><div><p style="font-size:0.72rem;color:var(--muted);margin-bottom:3px;letter-spacing:0.06em;text-transform:uppercase;">Tentang Penulis</p><p style="font-weight:600;">${article.nama}</p>${article.afiliasi ? `<p style="font-size:0.83rem;color:var(--muted);">${article.afiliasi}</p>` : ''}</div></div></div>`;
   body.innerHTML = html;
-
   showPage('article');
 }
 
 // ================================================================
-// RENDER FUNCTIONS
+// RENDER
 // ================================================================
 const catLabels = {ekonomi:'Ekonomi',politik:'Politik',sosial:'Sosial',lingkungan:'Lingkungan',pendidikan:'Pendidikan',opini:'Opini Umum'};
 const catClasses = {ekonomi:'cat-ekonomi',politik:'cat-politik',sosial:'cat-sosial',lingkungan:'cat-lingkungan',pendidikan:'cat-pendidikan',opini:'cat-opini'};
 const catEmojis = {ekonomi:'📊',politik:'🗳️',sosial:'👥',lingkungan:'🌿',pendidikan:'📚',opini:'✍️'};
 
 function makeCardHTML(article, idx) {
-  return `
-    <div class="article-card" onclick="showArticle(publishedArticles[${idx}])">
-      <div class="card-img-placeholder">${catEmojis[article.kategori] || '📝'}</div>
-      <span class="category-tag ${catClasses[article.kategori] || 'cat-opini'}">${catLabels[article.kategori] || article.kategori}</span>
-      <h3 class="art-title md mt-8">${escHtml(article.judul)}</h3>
-      ${article.ringkasan ? `<p class="art-excerpt mt-8" style="font-size:0.85rem;">${escHtml(article.ringkasan.substring(0,120))}${article.ringkasan.length>120?'…':''}</p>` : ''}
-      <div class="art-meta mt-16">
-        <span class="author">${escHtml(article.nama)}</span>
-        <span class="dot">·</span>
-        <span>${article.tanggal}</span>
-      </div>
-    </div>`;
+  return `<div class="article-card" onclick="showArticle(publishedArticles[${idx}])"><div class="card-img-placeholder">${catEmojis[article.kategori] || '📝'}</div><span class="category-tag ${catClasses[article.kategori] || 'cat-opini'}">${catLabels[article.kategori] || article.kategori}</span><h3 class="art-title md mt-8">${escHtml(article.judul)}</h3>${article.ringkasan ? `<p class="art-excerpt mt-8" style="font-size:0.85rem;">${escHtml(article.ringkasan.substring(0,120))}${article.ringkasan.length>120?'…':''}</p>` : ''}<div class="art-meta mt-16"><span class="author">${escHtml(article.nama)}</span><span class="dot">·</span><span>${article.tanggal}</span></div></div>`;
 }
 
 function makeWorkItemHTML(article, idx) {
-  return `
-    <div class="work-item" data-cat="${article.kategori}" onclick="showArticle(publishedArticles[${idx}])">
-      <span class="category-tag ${catClasses[article.kategori] || 'cat-opini'}">${catLabels[article.kategori] || article.kategori}</span>
-      <h3 class="art-title lg mt-8">${escHtml(article.judul)}</h3>
-      ${article.ringkasan ? `<p class="art-excerpt mt-8" style="font-size:0.88rem;">${escHtml(article.ringkasan)}</p>` : ''}
-      <div class="art-meta mt-16">
-        <span class="author">${escHtml(article.nama)}</span>
-        <span class="dot">·</span>
-        <span>${article.tanggal}</span>
-        ${article.afiliasi ? `<span class="dot">·</span><span>${escHtml(article.afiliasi)}</span>` : ''}
-      </div>
-    </div>`;
+  return `<div class="work-item" data-cat="${article.kategori}" onclick="showArticle(publishedArticles[${idx}])"><span class="category-tag ${catClasses[article.kategori] || 'cat-opini'}">${catLabels[article.kategori] || article.kategori}</span><h3 class="art-title lg mt-8">${escHtml(article.judul)}</h3>${article.ringkasan ? `<p class="art-excerpt mt-8" style="font-size:0.88rem;">${escHtml(article.ringkasan)}</p>` : ''}<div class="art-meta mt-16"><span class="author">${escHtml(article.nama)}</span><span class="dot">·</span><span>${article.tanggal}</span>${article.afiliasi ? `<span class="dot">·</span><span>${escHtml(article.afiliasi)}</span>` : ''}</div></div>`;
 }
 
 function renderHome() {
   const featuredEl = document.getElementById('homeFeatured');
   const userSectionEl = document.getElementById('homeUserArticles');
   const userGridEl = document.getElementById('homeUserGrid');
-
   if (publishedArticles.length === 0) {
-    featuredEl.innerHTML = `
-      <div style="max-width:1440px;margin:0 auto;padding:80px 5%;text-align:center;">
-        <div class="empty-state">
-          <div class="empty-icon">🌟</div>
-          <h3>Platform Siap Digunakan</h3>
-          <p>Belum ada tulisan yang diterbitkan. Kirim tulisan pertama Anda dan langsung tampil di sini!</p>
-          <button class="btn btn-primary" onclick="showPage('kirim')">Kirim Tulisan Pertama →</button>
-        </div>
-      </div>`;
+    featuredEl.innerHTML = `<div style="max-width:1440px;margin:0 auto;padding:80px 5%;text-align:center;"><div class="empty-state"><div class="empty-icon">🌟</div><h3>Platform Siap Digunakan</h3><p>Belum ada tulisan yang diterbitkan. Kirim tulisan pertama Anda dan langsung tampil di sini!</p><button class="btn btn-primary" onclick="showPage('kirim')">Kirim Tulisan Pertama →</button></div></div>`;
     userSectionEl.style.display = 'none';
     return;
   }
-
-  // Featured: tampilkan 3 artikel terbaru dalam layout featured
   const recent = publishedArticles.slice().reverse();
   const main = recent[0];
   const mainIdx = publishedArticles.indexOf(main);
-
   let sidebarHTML = '';
   for (let i = 1; i < Math.min(4, recent.length); i++) {
     const a = recent[i];
     const idx = publishedArticles.indexOf(a);
-    sidebarHTML += `
-      <div class="featured-sidebar-item" onclick="showArticle(publishedArticles[${idx}])">
-        <span class="category-tag ${catClasses[a.kategori]||'cat-opini'}">${catLabels[a.kategori]||a.kategori}</span>
-        <h3 class="art-title lg">${escHtml(a.judul)}</h3>
-        ${a.ringkasan ? `<p class="art-excerpt" style="font-size:0.85rem;">${escHtml(a.ringkasan.substring(0,100))}…</p>` : ''}
-        <div class="art-meta mt-16"><span class="author">${escHtml(a.nama)}</span><span class="dot">·</span><span>${a.tanggal}</span></div>
-      </div>`;
+    sidebarHTML += `<div class="featured-sidebar-item" onclick="showArticle(publishedArticles[${idx}])"><span class="category-tag ${catClasses[a.kategori]||'cat-opini'}">${catLabels[a.kategori]||a.kategori}</span><h3 class="art-title lg">${escHtml(a.judul)}</h3>${a.ringkasan ? `<p class="art-excerpt" style="font-size:0.85rem;">${escHtml(a.ringkasan.substring(0,100))}…</p>` : ''}<div class="art-meta mt-16"><span class="author">${escHtml(a.nama)}</span><span class="dot">·</span><span>${a.tanggal}</span></div></div>`;
   }
-
-  featuredEl.innerHTML = `
-    <div class="featured-grid">
-      <div class="featured-main" onclick="showArticle(publishedArticles[${mainIdx}])">
-        <span class="category-tag ${catClasses[main.kategori]||'cat-opini'} ">${catLabels[main.kategori]||main.kategori}</span>
-        <h2 class="art-title xl">${escHtml(main.judul)}</h2>
-        ${main.ringkasan ? `<p class="art-excerpt">${escHtml(main.ringkasan)}</p>` : ''}
-        <div class="art-meta"><span class="author">${escHtml(main.nama)}</span><span class="dot">·</span><span>${main.tanggal}</span></div>
-      </div>
-      <div class="featured-sidebar">${sidebarHTML || '<div class="featured-sidebar-item" style="display:flex;align-items:center;justify-content:center;flex:1;color:var(--muted);font-size:0.9rem;">Kirim lebih banyak tulisan untuk ditampilkan</div>'}</div>
-    </div>`;
-
-  // More articles section
+  featuredEl.innerHTML = `<div class="featured-grid"><div class="featured-main" onclick="showArticle(publishedArticles[${mainIdx}])"><span class="category-tag ${catClasses[main.kategori]||'cat-opini'}">${catLabels[main.kategori]||main.kategori}</span><h2 class="art-title xl">${escHtml(main.judul)}</h2>${main.ringkasan ? `<p class="art-excerpt">${escHtml(main.ringkasan)}</p>` : ''}<div class="art-meta"><span class="author">${escHtml(main.nama)}</span><span class="dot">·</span><span>${main.tanggal}</span></div></div><div class="featured-sidebar">${sidebarHTML || '<div class="featured-sidebar-item" style="display:flex;align-items:center;justify-content:center;flex:1;color:var(--muted);font-size:0.9rem;">Kirim lebih banyak tulisan untuk ditampilkan</div>'}</div></div>`;
   if (recent.length > 4) {
     const moreArticles = recent.slice(4, 10);
     userGridEl.innerHTML = moreArticles.map(a => makeCardHTML(a, publishedArticles.indexOf(a))).join('');
@@ -1142,19 +1334,16 @@ function renderCategoryPage(cat) {
 let currentFilter = 'semua';
 function renderWorks(cat) {
   currentFilter = cat;
-  // Update filter buttons
   ['semua','ekonomi','politik','sosial','lingkungan','pendidikan','opini'].forEach(c => {
     const btn = document.getElementById('filter-' + c);
     if (!btn) return;
     btn.className = c === cat ? 'btn btn-primary btn-sm' : 'btn btn-outline btn-sm';
   });
-
   const container = document.getElementById('worksContainer');
   const filtered = cat === 'semua' ? publishedArticles : publishedArticles.filter(a => a.kategori === cat);
-
   if (filtered.length === 0) {
     const catName = cat === 'semua' ? '' : ' di kategori ' + (catLabels[cat]||cat);
-    container.innerHTML = `<div class="empty-state"><div class="empty-icon">✍️</div><h3>Belum Ada Tulisan${cat!=='semua'?' di Kategori Ini':''}</h3><p>Platform ini siap menampung karya Anda${catName}. Kirimkan tulisan dan langsung tampil di sini!</p><button class="btn btn-primary" onclick="showPage('kirim')">Kirim Tulisan Sekarang →</button></div>`;
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon">✍️</div><h3>Belum Ada Tulisan${cat!=='semua'?' di Kategori Ini':''}</h3><p>Platform ini siap menampung karya Anda${catName}.</p><button class="btn btn-primary" onclick="showPage('kirim')">Kirim Tulisan Sekarang →</button></div>`;
   } else {
     const reversed = filtered.slice().reverse();
     container.innerHTML = `<div class="works-grid">${reversed.map(a => makeWorkItemHTML(a, publishedArticles.indexOf(a))).join('')}</div>`;
@@ -1163,9 +1352,6 @@ function renderWorks(cat) {
 
 function filterWorks(cat) { renderWorks(cat); }
 
-// ================================================================
-// STATISTICS UPDATE
-// ================================================================
 function updateStats() {
   document.getElementById('statArticles').textContent = publishedArticles.length;
   const authors = new Set(publishedArticles.map(a => a.nama.toLowerCase().trim()));
@@ -1173,7 +1359,7 @@ function updateStats() {
 }
 
 // ================================================================
-// FORM SUBMISSION — AUTO PUBLISH
+// FORM SUBMISSION
 // ================================================================
 function submitForm() {
   const nama = document.getElementById('f-nama').value.trim();
@@ -1182,131 +1368,155 @@ function submitForm() {
   const isi = document.getElementById('f-isi').value.trim();
   const kategori = document.getElementById('f-kategori').value;
   const ringkasan = document.getElementById('f-ringkasan').value.trim();
-  const afiliasi = document.getElementById('f-afiliasi').value.trim();
-
-  if (!nama) { showToast('Mohon isi nama lengkap Anda.'); document.getElementById('f-nama').focus(); return; }
-  if (!email || !email.includes('@')) { showToast('Mohon isi email yang valid.'); document.getElementById('f-email').focus(); return; }
-  if (!judul) { showToast('Mohon isi judul tulisan.'); document.getElementById('f-judul').focus(); return; }
-  if (!isi || isi.split(/\s+/).length < 50) { showToast('Isi tulisan minimal 50 kata.'); document.getElementById('f-isi').focus(); return; }
-  if (!kategori) { showToast('Mohon pilih kategori rubrik.'); document.getElementById('f-kategori').focus(); return; }
-  if (!ringkasan) { showToast('Mohon isi ringkasan tulisan.'); document.getElementById('f-ringkasan').focus(); return; }
-
-  // Auto publish — langsung masuk ke daftar
+  const afiliasi = (document.getElementById('f-afiliasi')||{}).value?.trim() || '';
+  if (!nama || !email || !judul || !isi || !kategori || !ringkasan) { showToast('Mohon lengkapi semua field yang wajib diisi.'); return; }
+  const wordCount = isi.split(/\s+/).filter(Boolean).length;
+  if (wordCount < 100) { showToast('Isi tulisan minimal 100 kata.'); return; }
   const now = new Date();
-  const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-  const tanggal = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
-
+  const monthsArr = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const tanggal = `${now.getDate()} ${monthsArr[now.getMonth()]} ${now.getFullYear()}`;
   const newArticle = { nama, email, afiliasi, judul, ringkasan, isi, kategori, tanggal, id: Date.now() };
   publishedArticles.push(newArticle);
-
-  // Update all relevant sections
-  renderHome();
-  renderCategoryPage(kategori);
-  renderWorks(currentFilter);
-  updateStats();
-
-  showToast('✅ Tulisan "' + judul.substring(0,40) + (judul.length>40?'…':'') + '" berhasil diterbitkan!');
-  clearForm();
-
-  // Optionally navigate to the article
-  setTimeout(() => showArticle(newArticle), 1800);
-}
-
-function clearForm() {
-  ['f-nama','f-email','f-afiliasi','f-judul','f-ringkasan','f-isi'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
-  document.getElementById('f-kategori').value = '';
-  document.getElementById('uploadedFileName').textContent = '';
-  document.getElementById('judulCount').textContent = '0 / 120 karakter';
-  document.getElementById('ringkasanCount').textContent = '0 / 200 karakter';
-  document.getElementById('wordCount').textContent = '0 kata';
-}
-
-// ================================================================
-// CHAR / WORD COUNTERS
-// ================================================================
-document.getElementById('f-judul').addEventListener('input', function() {
-  const el = document.getElementById('judulCount');
-  el.textContent = this.value.length + ' / 120 karakter';
-  el.className = 'char-count' + (this.value.length > 100 ? ' warn' : '') + (this.value.length >= 120 ? ' error' : '');
-});
-
-document.getElementById('f-ringkasan').addEventListener('input', function() {
-  const el = document.getElementById('ringkasanCount');
-  el.textContent = this.value.length + ' / 200 karakter';
-  el.className = 'char-count' + (this.value.length > 170 ? ' warn' : '') + (this.value.length >= 200 ? ' error' : '');
-});
-
-function updateWordCount(el) {
-  const words = el.value.trim() === '' ? 0 : el.value.trim().split(/\s+/).length;
-  const wc = document.getElementById('wordCount');
-  wc.textContent = words + ' kata';
-  wc.className = 'char-count' + (words < 50 && words > 0 ? ' warn' : '') + (words >= 50 ? '' : '');
-}
-
-// ================================================================
-// FILE UPLOAD
-// ================================================================
-function handleFileSelect(input) {
-  if (input.files && input.files[0]) {
-    document.getElementById('uploadedFileName').textContent = '✓ ' + input.files[0].name;
-    // If text file, try to read and populate the textarea
-    const f = input.files[0];
-    if (f.name.endsWith('.txt')) {
-      const reader = new FileReader();
-      reader.onload = e => {
-        document.getElementById('f-isi').value = e.target.result;
-        updateWordCount(document.getElementById('f-isi'));
-      };
-      reader.readAsText(f);
-    }
+  renderHome(); renderCategoryPage(kategori); renderWorks(currentFilter); updateStats();
+  const fill = document.getElementById('jfProgressFill');
+  const pctEl = document.getElementById('jfProgressPct');
+  if (fill) fill.style.width = '100%';
+  if (pctEl) pctEl.textContent = '100%';
+  for (let i = 1; i <= JF_TOTAL; i++) {
+    const p = document.getElementById('jf-panel-' + i);
+    if (p) p.classList.remove('active');
+    const nav = document.getElementById('jf-step-nav-' + i);
+    if (nav) { nav.classList.remove('active'); nav.classList.add('done'); }
+    const numEl = document.getElementById('jf-stepnum-' + i);
+    if (numEl) numEl.textContent = '✓';
   }
-}
-
-function handleDrop(event) {
-  event.preventDefault();
-  document.getElementById('uploadZone').classList.remove('dragging');
-  const file = event.dataTransfer.files[0];
-  if (file) document.getElementById('uploadedFileName').textContent = '✓ ' + file.name;
+  document.getElementById('jf-panel-success').classList.add('active');
+  showToast('✅ Tulisan berhasil diterbitkan!');
+  window.scrollTo({ top: 66, behavior: 'smooth' });
 }
 
 // ================================================================
-// SEARCH
+// SEARCH — REDESIGNED
 // ================================================================
+let searchFocusIdx = -1;
+let searchResultsCache = [];
+
 function openSearch() {
   document.getElementById('searchOverlay').classList.add('open');
+  document.getElementById('searchQuickNav').style.display = 'block';
+  document.getElementById('searchResultsArea').innerHTML = '';
+  document.getElementById('searchCount').textContent = '';
+  searchFocusIdx = -1;
   setTimeout(() => document.getElementById('searchInput').focus(), 80);
 }
+
 function closeSearch() {
   document.getElementById('searchOverlay').classList.remove('open');
   document.getElementById('searchInput').value = '';
-  document.getElementById('searchResults').innerHTML = '';
+  document.getElementById('searchResultsArea').innerHTML = '';
+  document.getElementById('searchCount').textContent = '';
+  searchFocusIdx = -1;
 }
-document.addEventListener('keydown', e => { if(e.key === 'Escape') closeSearch(); });
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('searchOverlay')) closeSearch();
+}
+
+function highlightMatch(text, query) {
+  if (!query) return escHtml(text);
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const re = new RegExp('(' + escaped + ')', 'gi');
+  return escHtml(text).replace(re, '<span class="search-highlight">$1</span>');
+}
 
 function doSearch(q) {
-  const container = document.getElementById('searchResults');
-  if (!q.trim()) { container.innerHTML = ''; return; }
-  const results = publishedArticles.filter(a =>
-    a.judul.toLowerCase().includes(q.toLowerCase()) ||
-    a.nama.toLowerCase().includes(q.toLowerCase()) ||
-    (a.ringkasan||'').toLowerCase().includes(q.toLowerCase()) ||
-    a.kategori.toLowerCase().includes(q.toLowerCase())
-  );
-  if (results.length === 0) {
-    container.innerHTML = `<p style="color:rgba(255,255,255,0.45);font-size:0.88rem;">Tidak ada hasil untuk "<em>${escHtml(q)}</em>"</p>`;
+  const quickNav = document.getElementById('searchQuickNav');
+  const resultsArea = document.getElementById('searchResultsArea');
+  const countEl = document.getElementById('searchCount');
+  searchFocusIdx = -1;
+
+  if (!q.trim()) {
+    quickNav.style.display = 'block';
+    resultsArea.innerHTML = '';
+    countEl.textContent = '';
+    searchResultsCache = [];
     return;
   }
-  container.innerHTML = results.slice(0, 6).map(a => {
+
+  quickNav.style.display = 'none';
+  const ql = q.toLowerCase();
+  searchResultsCache = publishedArticles.filter(a =>
+    a.judul.toLowerCase().includes(ql) ||
+    a.nama.toLowerCase().includes(ql) ||
+    (a.ringkasan||'').toLowerCase().includes(ql) ||
+    a.kategori.toLowerCase().includes(ql)
+  );
+
+  if (searchResultsCache.length === 0) {
+    resultsArea.innerHTML = `
+      <div class="search-section">
+        <div class="search-empty">
+          <div class="search-empty-icon">🔍</div>
+          <div class="search-empty-text">Tidak ada hasil untuk "<strong>${escHtml(q)}</strong>"</div>
+        </div>
+      </div>`;
+    countEl.textContent = '';
+    return;
+  }
+
+  countEl.textContent = searchResultsCache.length + ' hasil';
+  const iconClass = { ekonomi: 'icon-ekonomi', politik: 'icon-politik', sosial: 'icon-sosial', lingkungan: 'icon-lingkungan', pendidikan: 'icon-pendidikan', opini: 'icon-opini' };
+  const catTextClass = { ekonomi: 'cat-text-ekonomi', politik: 'cat-text-politik', sosial: 'cat-text-sosial', lingkungan: 'cat-text-lingkungan', pendidikan: 'cat-text-pendidikan', opini: 'cat-text-opini' };
+
+  const rows = searchResultsCache.slice(0, 8).map((a, i) => {
     const idx = publishedArticles.indexOf(a);
-    return `<div class="search-result-item" onclick="closeSearch();showArticle(publishedArticles[${idx}])">
-      <div class="cat">${(catLabels[a.kategori]||a.kategori).toUpperCase()}</div>
-      <h4>${escHtml(a.judul)}</h4>
-      <p style="color:rgba(255,255,255,0.45);font-size:0.8rem;margin-top:4px;">${escHtml(a.nama)} · ${a.tanggal}</p>
-    </div>`;
+    const ic = iconClass[a.kategori] || 'icon-opini';
+    const cc = catTextClass[a.kategori] || 'cat-text-opini';
+    return `
+      <div class="search-result-row" data-idx="${i}" onclick="selectSearchResult(${idx})">
+        <div class="search-result-icon ${ic}">${catEmojis[a.kategori] || '📝'}</div>
+        <div class="search-result-body">
+          <div class="search-result-cat ${cc}">${(catLabels[a.kategori]||a.kategori).toUpperCase()}</div>
+          <div class="search-result-title">${highlightMatch(a.judul, q)}</div>
+          <div class="search-result-meta">${escHtml(a.nama)}${a.afiliasi ? ' · ' + escHtml(a.afiliasi) : ''} · ${a.tanggal}</div>
+        </div>
+        <span class="search-result-arrow">→</span>
+      </div>`;
   }).join('');
+
+  resultsArea.innerHTML = `<div class="search-section"><div class="search-results-list" id="searchList">${rows}</div></div>`;
 }
+
+function selectSearchResult(idx) {
+  closeSearch();
+  showArticle(publishedArticles[idx]);
+}
+
+function handleSearchKey(e) {
+  const rows = document.querySelectorAll('.search-result-row');
+  if (!rows.length) return;
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    searchFocusIdx = Math.min(searchFocusIdx + 1, rows.length - 1);
+    rows.forEach((r,i) => r.classList.toggle('focused', i === searchFocusIdx));
+    rows[searchFocusIdx]?.scrollIntoView({ block: 'nearest' });
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    searchFocusIdx = Math.max(searchFocusIdx - 1, 0);
+    rows.forEach((r,i) => r.classList.toggle('focused', i === searchFocusIdx));
+    rows[searchFocusIdx]?.scrollIntoView({ block: 'nearest' });
+  } else if (e.key === 'Enter' && searchFocusIdx >= 0) {
+    rows[searchFocusIdx]?.click();
+  } else if (e.key === 'Escape') {
+    closeSearch();
+  }
+}
+
+// Keyboard shortcut Ctrl/Cmd+K
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openSearch(); }
+  if (e.key === 'Escape') closeSearch();
+});
 
 // ================================================================
 // TOAST
@@ -1325,6 +1535,32 @@ function escHtml(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+function updateWordCount(el) {
+  const words = el.value.trim() === '' ? 0 : el.value.trim().split(/\s+/).length;
+  const wc = document.getElementById('wordCount');
+  const mins = Math.max(1, Math.round(words / 200));
+  wc.textContent = words + ' kata · estimasi ' + mins + ' menit baca';
+}
+
+function handleFileSelect(input) {
+  if (input.files && input.files[0]) {
+    document.getElementById('uploadedFileName').textContent = '✓ ' + input.files[0].name;
+    const f = input.files[0];
+    if (f.name.endsWith('.txt')) {
+      const reader = new FileReader();
+      reader.onload = e => { document.getElementById('f-isi').value = e.target.result; updateWordCount(document.getElementById('f-isi')); };
+      reader.readAsText(f);
+    }
+  }
+}
+
+function handleDrop(event) {
+  event.preventDefault();
+  document.getElementById('uploadZone').classList.remove('dragging');
+  const file = event.dataTransfer.files[0];
+  if (file) document.getElementById('uploadedFileName').textContent = '✓ ' + file.name;
+}
+
 // ================================================================
 // DATE BAR
 // ================================================================
@@ -1334,6 +1570,103 @@ const now2 = new Date();
 document.getElementById('dateBar').textContent = `${days[now2.getDay()]}, ${now2.getDate()} ${months2[now2.getMonth()]} ${now2.getFullYear()}`;
 
 // ================================================================
+// JF MULTI-STEP
+// ================================================================
+let jfCurrentStep = 1;
+const JF_TOTAL = 5;
+
+function goStep(n) {
+  for (let i = 1; i <= JF_TOTAL; i++) {
+    const p = document.getElementById('jf-panel-' + i);
+    if (p) p.classList.remove('active');
+    const nav = document.getElementById('jf-step-nav-' + i);
+    if (nav) { nav.classList.remove('active'); if (i < n) nav.classList.add('done'); else nav.classList.remove('done'); }
+  }
+  const panel = document.getElementById('jf-panel-' + n);
+  if (panel) panel.classList.add('active');
+  const navItem = document.getElementById('jf-step-nav-' + n);
+  if (navItem) { navItem.classList.add('active'); navItem.classList.remove('done'); }
+  jfCurrentStep = n;
+  for (let i = 1; i <= JF_TOTAL; i++) {
+    const numEl = document.getElementById('jf-stepnum-' + i);
+    if (!numEl) continue;
+    if (i < n) numEl.textContent = '✓'; else numEl.textContent = i;
+  }
+  const pct = Math.round(((n - 1) / JF_TOTAL) * 100);
+  const fill = document.getElementById('jfProgressFill');
+  const pctEl = document.getElementById('jfProgressPct');
+  if (fill) fill.style.width = pct + '%';
+  if (pctEl) pctEl.textContent = pct + '%';
+  if (n === 5) buildSummary();
+  window.scrollTo({ top: 66, behavior: 'smooth' });
+}
+
+function nextStep(from) {
+  if (from === 1) {
+    const nama = document.getElementById('f-nama').value.trim();
+    const email = document.getElementById('f-email').value.trim();
+    if (!nama) { showToast('Mohon isi nama lengkap Anda.'); document.getElementById('f-nama').focus(); return; }
+    if (!email || !email.includes('@')) { showToast('Mohon isi email yang valid.'); document.getElementById('f-email').focus(); return; }
+  }
+  if (from === 2 && !document.getElementById('f-kategori').value) { showToast('Mohon pilih kategori tulisan.'); return; }
+  if (from === 3) {
+    if (!document.getElementById('f-judul').value.trim()) { showToast('Mohon isi judul tulisan.'); return; }
+    if (!document.getElementById('f-ringkasan').value.trim()) { showToast('Mohon isi ringkasan tulisan.'); return; }
+  }
+  if (from === 4) {
+    const isi = document.getElementById('f-isi').value.trim();
+    const words = isi === '' ? 0 : isi.split(/\s+/).length;
+    if (words < 100) { showToast('Isi tulisan minimal 100 kata. Saat ini: ' + words + ' kata.'); return; }
+  }
+  goStep(from + 1);
+}
+
+function selectCat(cat, el) {
+  document.querySelectorAll('.jf-cat-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('f-kategori').value = cat;
+}
+
+function buildSummary() {
+  const catLabelsLocal = {ekonomi:'Ekonomi',politik:'Politik',sosial:'Sosial',lingkungan:'Lingkungan',pendidikan:'Pendidikan',opini:'Opini Umum'};
+  const cat = document.getElementById('f-kategori').value;
+  const jenis = document.querySelector('input[name="jenisTulisan"]:checked');
+  const words = (document.getElementById('f-isi').value.trim()||'').split(/\s+/).filter(Boolean).length;
+  const rows = [
+    ['✍️ Penulis', document.getElementById('f-nama').value || '—'],
+    ['📧 Email', document.getElementById('f-email').value || '—'],
+    ['🏛️ Afiliasi', document.getElementById('f-afiliasi').value || 'Independen'],
+    ['📂 Kategori', catLabelsLocal[cat] || '—'],
+    ['📐 Jenis', jenis ? jenis.value.charAt(0).toUpperCase() + jenis.value.slice(1) : '—'],
+    ['📰 Judul', (document.getElementById('f-judul').value || '—').substring(0, 60) + (document.getElementById('f-judul').value.length > 60 ? '…' : '')],
+    ['📊 Panjang', words + ' kata · ~' + Math.max(1, Math.round(words/200)) + ' menit baca'],
+  ];
+  document.getElementById('jf-summary').innerHTML = rows.map(([label, val]) => `<div style="display:flex;gap:12px;align-items:baseline;font-size:0.86rem;"><span style="min-width:110px;color:var(--muted);font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;">${label}</span><span style="color:var(--ink);font-weight:500;">${escHtml(val)}</span></div>`).join('');
+}
+
+function jfCount(el, countId, max, unit) {
+  const countEl = document.getElementById(countId);
+  if (!countEl) return;
+  let val = unit === 'kata' ? (el.value.trim() === '' ? 0 : el.value.trim().split(/\s+/).length) : el.value.length;
+  countEl.textContent = val + ' / ' + max + ' ' + unit;
+  countEl.className = 'jf-count' + (val > max * 0.85 ? ' warn' : '') + (val >= max ? ' over' : '');
+}
+
+function resetJFForm() {
+  ['f-nama','f-email','f-wa','f-afiliasi','f-bio','f-judul','f-ringkasan','f-keywords','f-isi'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('f-kategori').value = '';
+  document.querySelectorAll('.jf-cat-card').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('.jf-radio-option').forEach(o => o.classList.remove('selected'));
+  document.querySelectorAll('input[name="jenisTulisan"]').forEach(r => r.checked = false);
+  document.getElementById('uploadedFileName').textContent = '';
+  document.getElementById('jf-panel-success').classList.remove('active');
+  goStep(1);
+}
+
+// ================================================================
 // INIT
 // ================================================================
 renderHome();
@@ -1341,5 +1674,3 @@ updateStats();
 </script>
 </body>
 </html>
-HTMLEOF
-echo "Done. File size: $(wc -c < /mnt/user-data/outputs/orvexa-foundations.html) bytes"
